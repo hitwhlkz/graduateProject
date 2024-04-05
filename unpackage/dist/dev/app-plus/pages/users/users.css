@@ -1,0 +1,136 @@
+
+.index {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		background-color: white;
+		border-top: 1px solid #cccccc;
+}
+.vbox {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+}
+.top_back_img {
+		z-index: -1;
+		position: absolute;
+		top: 0;
+		width: 100%;
+		height: 13.125rem;
+}
+.top {
+		display: flex;
+		width: 100%;
+		height: 13.125rem;
+		align-items: center;
+}
+.circle {
+		margin-left: 3.125rem;
+		width: 3.75rem;
+		height: 3.75rem;
+		border: 0.3125rem solid #a4f4f6;
+		border-radius: 4.6875rem;
+		overflow: hidden;
+}
+.head {
+		width: 3.75rem;
+		height: 3.75rem;
+		border-radius: 4.6875rem;
+}
+.top-texts {
+		display: flex;
+		flex-direction: column;
+		margin-left: 0.46875rem;
+		color: white;
+}
+.name {
+		font-size: 1.125rem;
+		font-weight: 500;
+}
+.set-top-hr {
+		width: 6.5625rem;
+		height: 0.1875rem;
+}
+.top-changeInfo {
+		margin-top: 7.8125rem;
+		width: 3.75rem;
+		height: 0.875rem;
+		line-height: 0.875rem;
+		background-color: #FFFFFF;
+		border-radius: 0.46875rem;
+		padding: 0.3125rem;
+		color: #33dce8;
+}
+.middle {
+		display: flex;
+		align-items: center;
+		position: relative;
+		top: -1.5625rem;
+		width: 80%;
+		height: 3.125rem;
+		background-color: white;
+		border-radius: 0.46875rem;
+}
+.middle-line {
+		width: 0.0625rem;
+		height: 2.5rem;
+		background-color: #eeeeee;
+}
+.middle-left {
+		flex-grow: 1;
+		color: #666666;
+		display: flex;
+		align-items: center;
+		text-align: center;
+}
+.middle-right {
+		flex-grow: 1;
+		color: #666666;
+		display: flex;
+		align-items: center;
+		text-align: center;
+}
+.middle-icon {
+		width: 1.25rem;
+		height: 1.25rem;
+		margin-left: 0.625rem;
+}
+.middle-num {
+		color: #fcac45;
+		-webkit-font-smoothing: antialiased;
+}
+.cell {
+		display: flex;
+		align-items: center;
+		border-bottom: 1px solid #ccc;
+		height: 2.8125rem;
+		align-items: center;
+		justify-content: space-between;
+}
+.cell:active {
+		background-color: #333;
+		color: white;
+		box-shadow: 0.03125rem 0.03125rem 1.09375rem #ccc;
+}
+.cell-left {
+		display: flex;
+		align-items: center;
+		margin-left: 2.03125rem;
+}
+.cell-text {
+		margin-left: 0.78125rem;
+}
+.cell-right {
+		margin-right: 1.40625rem;
+		height: 0.875rem;
+}
+.cell_icon {
+		width: 1.25rem;
+		height: 1.25rem;
+		height: 1.25rem;
+}
+.right-arrow {
+		color: #aaa;
+		width: 0.46875rem;
+		height: 0.875rem;
+}

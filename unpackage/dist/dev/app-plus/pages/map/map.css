@@ -1,0 +1,33 @@
+
+/* 样式设计 */
+.chat-container[data-v-e06b858f] {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.chat-box[data-v-e06b858f] {
+  height: 300px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.message[data-v-e06b858f] {
+  margin-bottom: 5px;
+}
+.user-message[data-v-e06b858f] {
+  text-align: right;
+}
+.chatgpt-message[data-v-e06b858f] {
+  text-align: left;
+}
+.input-container[data-v-e06b858f] {
+  display: flex;
+  align-items: center;
+}
+.input-container uni-input[data-v-e06b858f] {
+  flex: 1;
+  margin-right: 10px;
+}
+.input-container uni-button[data-v-e06b858f] {
+  padding: 5px 10px;
+}
