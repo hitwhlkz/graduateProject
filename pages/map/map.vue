@@ -21,8 +21,8 @@ export default {
       messages: [],
       userMessage: '',
       accessToken: '',
-      apiKey: '',
-      secretKey: ''
+      apiKey: 'JfYcYomzR7kVm2NfFldcqL3I',
+      secretKey: '2R8LSwiP8P3ocenMySqz5CDFAOxxBCUp'
     };
   },
   methods: {
@@ -97,5 +97,65 @@ export default {
 </script>
 
 <style scoped>
-/* 样式省略 */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-window {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.message-container {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.message-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 70%;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+.user-message .message-content {
+  align-self: flex-end;
+  background-color: #dcf8c6;
+}
+
+.assistant-message .message-content {
+  align-self: flex-start;
+}
+
+.message-text {
+  word-wrap: break-word;
+}
+
+.message-audio {
+  display: flex;
+  align-items: center;
+}
+
+.iconfont {
+  font-size: 20px;
+}
 </style>
