@@ -1,96 +1,125 @@
 <template>
   <div class="container">
-    <div class="messages">
+    <div v-if="unshowVideo" class="messages">
       <div v-for="message in messages" :key="message.id" class="message" :class="{ 'user-message': message.role === 'user', 'assistant-message': message.role === 'assistant' }">
         <div class="message-content">{{ message.content }}</div>
         <div class="message-timestamp">{{ message.timestamp }}</div>
-        <button v-if="message.role === 'assistant'" @click="speakMessage(message.content)">播放</button>
+        <button v-if="message.role === 'assistant' && videoUrl" @click="playVideo(videoUrl)">播放</button>
       </div>
     </div>
-    <div class="input-container">
-      <input type="text" v-model="userMessage" @keyup.enter="sendMessage" placeholder="请输入消息...">
+	
+    <div v-if="unshowVideo" class="input-container">
+      <input type="text" v-model="topic" placeholder="主题">
+      <input type="text" v-model="mainCharacter" placeholder="主人公">
       <button @click="sendMessage">发送</button>
+    </div>
+    <div class="fullscreen-video-container" v-if="showVideo">
+      <video id="myVideo" :src="videoUrl" controls autoplay class="fullscreen-video" @ended="handleVideoEnded"></video>
     </div>
   </div>
 </template>
-
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
       messages: [],
-      userMessage: '',
-      accessToken: '',
+      topic: '',
+      mainCharacter: '',
+      videoUrl: '',
+	  showVideo: false, // 控制视频显示与隐藏的变量
+	  unshowVideo: true,
       apiKey: 'JfYcYomzR7kVm2NfFldcqL3I',
-      secretKey: '2R8LSwiP8P3ocenMySqz5CDFAOxxBCUp'
+      secretKey: '2R8LSwiP8P3ocenMySqz5CDFAOxxBCUp',
+      imageUrl: '' // 新增 imageUrl 属性用于存储传递过来的图片 URL
     };
   },
+  onLoad() {
+    // 在页面加载时获取传递过来的图片 URL
+    this.imageUrl = this.$route.query.url;
+    console.log('Received image URL:', this.imageUrl);
+  },
   methods: {
-    async getAccessToken() {
-      try {
-        const response = await uni.request({
-          url: `http://localhost:3000/getAccessToken?apiKey=${this.apiKey}&secretKey=${this.secretKey}`,
-          method: 'GET'
-        });
-        if (response.data && response.data.access_token) {
-          this.accessToken = response.data.access_token;
-        } else {
-          console.error('Failed to obtain access_token');
-        }
-      } catch (error) {
-        console.error('Error fetching access_token:', error);
-      }
-    },
     async sendMessage() {
-      await this.getAccessToken(); // 先获取 access_token
-
-      // 将用户消息添加到消息列表中
-      this.messages.push({
-        id: Date.now(),
-        role: 'user',
-        content: this.userMessage,
-        timestamp: new Date().toLocaleTimeString()
-      });
-
-      // 发送对话请求
       try {
-        const response = await uni.request({
-          url: `http://localhost:3000/sendMessage?accessToken=${this.accessToken}`,
-          method: 'POST',
-          header: {
-            'Content-Type': 'application/json'
-          },
-          data: {
-            messages: [
-              { "role": "user", "content": this.userMessage }
-            ]
-          }
+        const response = await axios.get(`http://localhost:3000/getAccessToken?apiKey=${this.apiKey}&secretKey=${this.secretKey}`);
+        const accessToken = response.data.access_token;
+
+        // 修改这里，将 imageUrl 传递给后端
+        const messageText = `请给我一段故事, 主题：${this.topic}，主人公：${this.mainCharacter},50字`;
+        const imageUrl = this.imageUrl; // 使用传递过来的图片 URL
+        this.messages.push({
+          id: Date.now(),
+          role: 'user',
+          content: messageText,
+          timestamp: new Date().toLocaleTimeString()
         });
-        
-        // 处理响应
-        if (response.data && response.data.result) {
+
+        const aiResponse = await axios.post(`http://localhost:3000/sendMessage?accessToken=${accessToken}`, {
+          messages: [{ role: 'user', content: messageText }]
+        });
+
+        if (aiResponse.data && aiResponse.data.result) {
           this.messages.push({
             id: Date.now(),
             role: 'assistant',
-            content: response.data.result,
-            timestamp: new Date().toLocaleTimeString() // 添加时间戳
+            content: aiResponse.data.result,
+            timestamp: new Date().toLocaleTimeString()
           });
-          this.userMessage = ''; // 清空输入框
-          this.scrollToBottom(); // 滚动到底部
+          const imageUrl = this.imageUrl;
+          console.log('this is imageUrl:', imageUrl);
+          await this.generateAndPlayVideo(imageUrl, aiResponse.data.result);
+
         } else {
-          console.error('Failed to get response from API');
+          console.error('Failed to get response from AI API');
         }
       } catch (error) {
         console.error('Error sending message:', error);
       }
     },
-    speakMessage(text) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      speechSynthesis.speak(utterance);
+    async generateAndPlayVideo(imageUrl, text) {
+      try {
+        const response = await axios.post(`http://localhost:3000/generateVideo`, {
+          imageUrl,
+          text
+        });
+
+        if (response.data && response.data.videoUrl) {
+          this.videoUrl = response.data.videoUrl;
+          console.log(this.videoUrl);
+          // 获取视频 URL 后立即播放视频
+          this.playVideo(this.videoUrl);
+        } else {
+          console.error('Failed to get video URL from API');
+        }
+      } catch (error) {
+        console.error('Error generating or playing video:', error);
+      }
     },
-    scrollToBottom() {
-      // 实现滚动到底部的功能
-      // 请根据实际情况编写滚动到底部的逻辑
+    playVideo(videoUrl) {
+      const videoContext = uni.createVideoContext('myVideo', this);
+	  console.log(this.showVideo);
+      if (videoUrl) {
+        // 显示视频元素
+		console.log('视频url:', videoUrl);
+        this.showVideo = true;
+		this.unshowVideo = false;
+        // 播放视频
+        videoContext.play();
+      } else {
+        console.error('Video URL is empty');
+      }
+    },
+	handleVideoEnded() {
+	  console.log('视频播放结束');
+	  // 退出全屏
+	  const videoContext = uni.createVideoContext('myVideo', this);
+	  this.unshowVideo = true;
+	  this.showVideo = false;
+	},
+    speakMessage(text) {
+      // 语音播放逻辑...
     }
   }
 };
@@ -100,62 +129,81 @@ export default {
 .container {
   display: flex;
   flex-direction: column;
-  height: 100%;
-}
-
-.chat-window {
-  flex: 1;
+  height: 100vh; /* 占据整个屏幕的高度 */
+  padding: 20px;
   overflow-y: auto;
-  padding: 10px;
 }
 
-.message-container {
+.messages {
+  flex: 1;
   display: flex;
+  flex-direction: column;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
   margin-bottom: 10px;
 }
 
-.avatar {
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
-}
-
-.avatar img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-}
-
-.message-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  max-width: 70%;
-  padding: 10px;
-  border-radius: 10px;
-  background-color: #f0f0f0;
-  cursor: pointer;
-}
-
-.user-message .message-content {
+.user-message {
   align-self: flex-end;
-  background-color: #dcf8c6;
 }
 
-.assistant-message .message-content {
+.assistant-message {
   align-self: flex-start;
 }
 
-.message-text {
-  word-wrap: break-word;
+.message-content {
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #f0f0f0;
+  max-width: 70%;
 }
 
-.message-audio {
+.message-timestamp {
+  align-self: flex-end;
+  margin-top: 5px;
+  font-size: 12px;
+  color: #999;
+}
+
+button {
+  margin-top: 5px;
+  cursor: pointer;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 5px 10px;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+.input-container {
   display: flex;
-  align-items: center;
 }
 
-.iconfont {
-  font-size: 20px;
+.input-container input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-right: 10px;
+}
+
+.fullscreen-video-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+.fullscreen-video {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 </style>

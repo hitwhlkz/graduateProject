@@ -1,0 +1,23 @@
+{
+  "hash": "9d67eff0",
+  "browserHash": "56f469e2",
+  "optimized": {
+    "uni-request": {
+      "src": "../../pages/index/node_modules/uni-request/index.js",
+      "file": "uni-request.js",
+      "fileHash": "4a442503",
+      "needsInterop": false
+    },
+    "axios": {
+      "src": "../../pages/index/node_modules/axios/index.js",
+      "file": "axios.js",
+      "fileHash": "bfebd68d",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-JC4IRQUL": {
+      "file": "chunk-JC4IRQUL.js"
+    }
+  }
+}

@@ -1,18 +1,20 @@
 <template>
-  <view class="container">
+  <div class="container">
     <!-- 上传图片区域 -->
-    <view class="upload-container">
+    <div class="upload-container">
       <!-- 点击上传图片的图标或按钮 -->
-      <image src="/static/upload.png" class="upload-icon" mode="aspectFit" @click="openCamera"></image>
+      <img src="~@/static/upload.png" class="upload-icon" @click="openCamera" alt="Upload Icon">
       <!-- 上传图片提示信息 -->
-      <view class="upload-tip">点击上方上传图片</view>
-    </view>
+      <div class="upload-tip">点击上方上传图片</div>
+    </div>
     <!-- 拍照按钮 -->
-    <view v-if="showCaptureButton" class="capture-button" @click="takePicture">拍照</view>
-  </view>
+    <div v-if="showCaptureButton" class="capture-button" @click="takePicture">拍照</div>
+  </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -55,8 +57,7 @@ export default {
         console.error('getUserMedia is not supported in this browser');
       }
     },
-    takePicture() {
-      // 在这里实现拍照功能
+    async takePicture() {
       const video = this.videoElement;
       if (video) {
         const canvas = document.createElement('canvas');
@@ -64,25 +65,35 @@ export default {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const imageDataURL = canvas.toDataURL('image/jpeg'); // 获取图片的 Base64 编码
-        console.log(imageDataURL); // 这里可以把图片数据保存到本地或上传到服务器
-		// 将图片转换为 Blob 对象
-		canvas.toBlob((blob) => {
-		  // 创建临时的下载链接
-		  const url = window.URL.createObjectURL(blob);
-		  // 创建一个隐藏的 <a> 标签
-		  const a = document.createElement('a');
-		  // 设置下载链接和文件名
-		  a.href = url;
-		  a.download = 'photo.jpg'; // 下载的文件名
-		  // 将 <a> 标签添加到页面中
-		  document.body.appendChild(a);
-		  // 模拟点击下载链接
-		  a.click();
-		  // 下载完成后移除 <a> 标签和临时链接
-		  document.body.removeChild(a);
-		  URL.revokeObjectURL(url);
-		}, 'image/jpeg');
+      
+        // 将图片转换为 base64 格式
+        const base64Image = canvas.toDataURL('image/jpeg');
+      
+        // 发送 base64 图片数据到后端
+        try {
+          const response = await axios.post('http://localhost:3001/uploadImage', { image: base64Image });
+      
+          console.log('Upload Response:', response.data);
+          if (response.data && response.data.url) {
+            // 请求成功
+            uni.navigateTo({
+              url: '/pages/map/map?url=' + response.data.url // 跳转到map.vue，并传递图片 URL
+            });
+          } else {
+            console.error('Upload failed, data structure mismatch');
+            uni.showToast({
+              title: '上传失败，请重试',
+              icon: 'none'
+            });
+          }
+        } catch (error) {
+          console.error('Upload Error:', error.message);
+          uni.showToast({
+            title: '上传失败，请重试',
+            icon: 'none'
+          });
+        }
+    
         // 隐藏拍照按钮
         this.showCaptureButton = false;
         // 停止视频播放
@@ -91,6 +102,7 @@ export default {
         video.remove();
       }
     },
+
   },
 };
 </script>

@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "@dcloudio/uni-components": "^3.0.0-alpha-3000020210521001",
+    "axios": "^1.6.8",
+    "browser-image-compression": "^2.0.2",
+    "compressorjs": "^1.2.1",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "image-compression": "^0.0.6",
+    "image-size": "^1.1.1",
+    "multer": "^1.4.5-lts.1",
+    "sxpress": "^1.0.3",
+    "tinify": "^1.7.1"
+  }
+}

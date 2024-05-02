@@ -36,6 +36,7 @@
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false,
+				"props": true,
 				"app-plus":{
 							"titleNView": false
 						}
@@ -75,12 +76,7 @@
 	                "selectedIconPath": "static/icon/data.png",
 	                "text": "虚拟人库"
 	            },
-	            {
-	                "pagePath": "pages/map/map",
-	                "iconPath": "static/icon/map.png",
-	                "selectedIconPath": "static/icon/map.png",
-	                "text": "故事生成"
-	            }, {
+	             {
 	                "pagePath": "pages/users/users",
 	                "iconPath": "static/icon/person.png",
 	                "selectedIconPath": "static/icon/person.png",

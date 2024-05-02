@@ -1,0 +1,18 @@
+{
+  "name": "@dcloudio/uni-components",
+  "version": "3.0.0-alpha-3000020210521001",
+  "description": "@dcloudio/uni-components",
+  "main": "index.js",
+  "files": [
+    "style"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-components"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dcloudio/uni-app/issues"
+  }
+}

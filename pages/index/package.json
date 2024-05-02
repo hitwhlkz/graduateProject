@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@dcloudio/uni-components": "^3.0.0-alpha-3000020210521001",
+    "axios": "^1.6.8",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "uni-request": "^1.0.2"
+  }
+}
